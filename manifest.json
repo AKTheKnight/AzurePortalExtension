@@ -1,0 +1,6 @@
+{
+  "manifest_version": 2,
+  "name": "Azure Portal Extension",
+  "version": "1.0.0",
+  "description": "Extension to add useful features into the Azure Portal."
+}
