@@ -1,6 +1,23 @@
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({color: '#3aa757'}, function() {
-        console.log("The color is green.");
-        console.log("APE is running");
-    });
-});
+"use strict";
+
+console.log("APE [background.js] starting");
+
+//Users Azure auth token
+var authToken;
+
+chrome.webRequest.onBeforeSendHeaders.addListener(
+    function (info) {
+        if (info.url.indexOf("portal.azure.com") === -1) {
+            for (let header of info.requestHeaders) {
+                if (header.name.toLowerCase() === "authorization") {
+                    if (authToken == null || authToken !== header.value) {
+                        authToken = header.value;
+                        console.log("APE authtoken updated");
+                    }
+                }
+            }
+        }
+        return {requestHeaders: info.requestHeaders};
+    },
+    {urls: ["<all_urls>"]},
+    ["blocking", "requestHeaders"]);
