@@ -2,5 +2,10 @@
   "manifest_version": 2,
   "name": "Azure Portal Extension",
   "version": "1.0.0",
-  "description": "Extension to add useful features into the Azure Portal."
+  "description": "Extension to add useful features into the Azure Portal.",
+  "permissions": ["storage"],
+  "background": {
+    "scripts": ["libs/jquery-3.5.1.min.js", "background.js"],
+    "persistent": true
+  }
 }
