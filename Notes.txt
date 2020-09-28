@@ -1,0 +1,14 @@
+subscriptions[] schema:
+// Subscription:
+//      name
+//      id
+//      resourceGroups()
+
+// ResourceGroup
+//      name
+//      resources()
+
+// Resource
+//      name
+//      type
+//      url (If type == Microsoft.Web/sites)

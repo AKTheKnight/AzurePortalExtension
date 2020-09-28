@@ -3,15 +3,26 @@
   "name": "Azure Portal Extension",
   "version": "1.0.0",
   "description": "Extension to add useful features into the Azure Portal.",
+  "icons": {
+    "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+  },
   "permissions": [
-    "storage",
-    "https://portal.azure.com/*",
-    "https://management.azure.com/*",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "https://portal.azure.com/*",
+    "https://management.azure.com/*"
   ],
   "background": {
-    "scripts": ["libs/jquery-3.5.1.min.js", "background.js"],
+    "scripts": ["libs/jquery-3.5.1.min.js", "utils.js", "background.js"],
     "persistent": true
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://ms.portal.azure.com/*", "https://portal.azure.com/*"],
+      "js": ["libs/jquery-3.5.1.min.js", "utils.js", "script.js"],
+      "run_at":"document_end"
+    }
+  ]
 }
