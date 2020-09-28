@@ -81,12 +81,7 @@ function isUrlShowingResourceGroups(uri) {
     return false;
 }
 
-/**
- * Updates the UI list
- */
-function updateResourceGroupList() {
-    //Text for debugging:
-    /*
+function testUpdateResourceGroupList() {
     const rows = $('div.fxc-gc-row-content');
     rows.each((index, row) => {
         // rgElem
@@ -94,8 +89,12 @@ function updateResourceGroupList() {
         //subElem
         $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_1 a.fxc-gcflink-link').css("background-color", "green");
     });
-    */
+}
 
+/**
+ * Updates the UI list
+ */
+function updateResourceGroupList() {
     const rows = $('div.fxc-gc-row-content');
     rows.each((index, row) => {
 
