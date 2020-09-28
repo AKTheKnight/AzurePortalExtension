@@ -81,13 +81,16 @@ function isUrlShowingResourceGroups(uri) {
     return false;
 }
 
+/**
+ * This function runs the same queries as updateResourceGroupList() but changes rgElem to red and rgSub to green for testing.
+ */
 function testUpdateResourceGroupList() {
     const rows = $('div.fxc-gc-row-content');
     rows.each((index, row) => {
-        // rgElem
-        $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_0 a.fxc-gcflink-link').css("background-color", "red");
-        //subElem
-        $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_1 a.fxc-gcflink-link').css("background-color", "green");
+        // noinspection CssInvalidPseudoSelector
+        $(row).find('div:regex(class,fxc-gc-cell\.fxc-gc-columncell_[0-9]_0)').find('a.fxc-gcflink-link').css("background-color", "red");
+        // noinspection CssInvalidPseudoSelector
+        $(row).find('div:regex(class,fxc-gc-cell\.fxc-gc-columncell_[0-9]_1)').find('a.fxc-gcflink-link').css("background-color", "green");
     });
 }
 
@@ -98,10 +101,12 @@ function updateResourceGroupList() {
     const rows = $('div.fxc-gc-row-content');
     rows.each((index, row) => {
 
-        let rgElem = $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_0 a.fxc-gcflink-link');
+        // noinspection CssInvalidPseudoSelector
+        let rgElem = $(row).find('div:regex(class,fxc-gc-cell\.fxc-gc-columncell_[0-9]_0)').find('a.fxc-gcflink-link')
         let rgName = $(rgElem).text();
 
-        let subElem = $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_1 a.fxc-gcflink-link');
+        // noinspection CssInvalidPseudoSelector
+        let subElem = $(row).find('div:regex(class,fxc-gc-cell\.fxc-gc-columncell_[0-9]_1)').find('a.fxc-gcflink-link');
         let subName = $(subElem).text();
 
         let sub = getSubscriptionFromName(subName);
