@@ -16,15 +16,14 @@ function updatePortal() {
 function updateData() {
     chrome.runtime.sendMessage("getSubscriptions", function(response) {
         logScript("sending getSubscriptions");
-        //console.log("APE [script.js] sending getSubscriptions");
         subscriptions = response.subscriptions;
-        console.log(subscriptions);
     });
 
     // Updating every 5 seconds as it might take a while with large accounts
-    //setTimeout(updateData, 5000);
+    setTimeout(updateData, 5000);
 }
 
+//Wait one second to ensure we have got the azure Auth token in the background
 setTimeout(updateData, 1000);
 updatePortal();
 
@@ -72,8 +71,12 @@ function getWebAppsFromResourceGroup(resourceGroup) {
 }
 
 function isUrlShowingResourceGroups(uri) {
-    if (uri.endsWith("/resourceGroups"))
+    if (uri.toLowerCase().endsWith("/resourceGroups".toLowerCase())) {
         return true;
+    }
+    else if (uri.toLowerCase().endsWith("/BrowseResourceGroups".toLowerCase())) {
+        return true;
+    }
 
     return false;
 }
@@ -82,10 +85,19 @@ function isUrlShowingResourceGroups(uri) {
  * Updates the UI list
  */
 function updateResourceGroupList() {
+    //Text for debugging:
+    /*
     const rows = $('div.fxc-gc-row-content');
     rows.each((index, row) => {
-        // $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_0 a.fxc-gcflink-link').css("background-color", "red");
-        // $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_1 a.fxc-gcflink-link').css("background-color", "green");
+        // rgElem
+        $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_0 a.fxc-gcflink-link').css("background-color", "red");
+        //subElem
+        $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_1 a.fxc-gcflink-link').css("background-color", "green");
+    });
+    */
+
+    const rows = $('div.fxc-gc-row-content');
+    rows.each((index, row) => {
 
         let rgElem = $(row).find('div.fxc-gc-cell.fxc-gc-columncell_0_0 a.fxc-gcflink-link');
         let rgName = $(rgElem).text();

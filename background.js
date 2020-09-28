@@ -1,7 +1,6 @@
-//"use strict";
+"use strict";
 
 logBackground("starting")
-//console.log("APE [background.js] starting");
 
 //Users Azure auth token
 var authToken;
@@ -13,7 +12,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
                 if (header.name.toLowerCase() === "authorization") {
                     if (authToken == null || authToken !== header.value) {
                         authToken = header.value;
-                        console.log("APE authtoken updated");
+                        logBackground("authToken updated")
                     }
                 }
             }
@@ -117,9 +116,6 @@ async function getSubscriptions() {
 
         return subscription;
     }));
-
-    console.log("About to return");
-    console.log(subscriptions);
 
     return {subscriptions: subscriptions};
 }
