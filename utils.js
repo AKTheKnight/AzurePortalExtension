@@ -1,3 +1,4 @@
+const IS_DEV_MODE = !('update_url' in chrome.runtime.getManifest());
 
 function logBackground(message) {
     log("background.js", message);
@@ -8,7 +9,9 @@ function logScript(message) {
 }
 
 function log(file, message) {
-    console.log("APE [" + file + "] " + message);
+    if (IS_DEV_MODE) {
+        console.log("APE [" + file + "] " + message);
+    }
 }
 
 // https://j11y.io/javascript/regex-selector-for-jquery/
