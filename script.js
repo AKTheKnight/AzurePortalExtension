@@ -2,11 +2,15 @@
 
 logScript("starting");
 
-
 function updatePortal() {
+
     //All updates start in this thread
     if (isUrlShowingResourceGroups(window.location.href) === true) {
         updateResourceGroupList();
+    }
+
+    if (isUrlShowingResources(window.location.href) === true) {
+        updateResourceList();
     }
 
     //Update every second
@@ -81,6 +85,85 @@ function isUrlShowingResourceGroups(uri) {
     return false;
 }
 
+function isUrlShowingResources(uri) {
+    if (uri.toLowerCase().endsWith("/resources".toLowerCase())) {
+        return true;
+    }
+    if (uri.toLowerCase().indexOf("/resourceGroups".toLowerCase()) !== -1
+        && uri.toLowerCase().indexOf("/overview") !== -1) {
+        return true;
+    }
+
+    return false;
+}
+
+function printSubscriptions() {
+    console.log(subscriptions);
+}
+
+/**
+ * Updates the UI list for resources
+ */
+function updateResourceList() {
+    const rows = $('div.fxc-gc-row-content');
+    rows.each((index, row) => {
+        let linkdiv = $(row).find('a.fxc-gcflink-link');
+        let link = $(linkdiv).attr("href");
+
+        const linkRegexp = /resource\/subscriptions\/(?<sub>[^/]*)\/resourceGroups\/(?<rg>.*)\/providers\/(?<type>.*\/.*)\/(?<name>.*)/g;
+        let matches = linkRegexp.exec(link);
+
+        let subscription = getSubscriptionFromId(matches.groups.sub);
+        if (subscription == null) {
+            return;
+        }
+
+        let resourceGroup = getResourceGroup(matches.groups.rg, subscription);
+        if (resourceGroup == null) {
+            return;
+        }
+
+        let resource = resourceGroup.resources.find(res => res.name === matches.groups.name);
+        if (resource == null) {
+            return;
+        }
+
+        if (resource.type === "Microsoft.Web/sites") {
+            $(linkdiv).on("contextmenu", false, function(e) {
+                addPopup();
+                addPopupLink("Visit Website", resource.url);
+                $("#ape-popup").show().css("top", e.pageY + "px").css("left", e.pageX + "px");
+                e.preventDefault();
+            });
+        }
+    });
+}
+
+function addPopup() {
+    $('#ape-popup').remove();
+    $(popup).appendTo("#web-container");
+    $('#ape-popup').hide();
+
+    $(document).on('click', function(e) {
+        $('#ape-popup').remove();
+    });
+}
+
+function addPopupLink(text, link) {
+    $("#ape-popup").find('ul.fxs-contextMenu-itemList').append(
+        "<a href=\""+ link + "\" target=\"_blank\">" +
+        "<li role=\"menuitem\" class=\"fxs-contextMenu-item msportalfx-command-like-button fxs-portal-hover\">" +
+        "<div class=\"fxs-contextMenu-text msportalfx-text-ellipsis\">" +
+        text +
+        "</div>" +
+        "<div class=\"fxs-contextMenu-icon\">" +
+        "</div>" +
+        "</li>" +
+        "</a>"
+    );
+}
+
+
 /**
  * This function runs the same queries as updateResourceGroupList() but changes rgElem to red and rgSub to green for testing.
  */
@@ -129,3 +212,27 @@ function updateResourceGroupList() {
     });
 }
 
+var popup = "<div id=\"ape-popup\" class=\"fxs-commands-contextMenu az-noprint fxs-contextMenu fxs-popup fxs-portal-bg-txt-br msportalfx-shadow-level2 msportalfx-unselectable fxs-contextMenu-active\">" +
+    "    <ul role=\"menu\" class=\"fxs-contextMenu-itemList\">" +
+/*    "        <li role=\"menuitem\" class=\"fxs-contextMenu-item msportalfx-command-like-button fxs-portal-hover\">\n" +
+    "            <div class=\"fxs-contextMenu-text msportalfx-text-ellipsis\">\n" +
+    "                Pin to dashboard\n" +
+    "            </div>\n" +
+    "            <div class=\"fxs-contextMenu-icon\">\n" +
+    "                <svg height=\"100%\" width=\"100%\" aria-hidden=\"true\" role=\"presentation\" focusable=\"false\">\n" +
+    "                    <use href=\"#FxSymbol0-00f\"></use>\n" +
+    "                </svg>\n" +
+    "            </div>\n" +
+    "        </li>\n" +
+    "        <li role=\"menuitem\" class=\"fxs-contextMenu-item msportalfx-command-like-button fxs-portal-hover\">\n" +
+    "            <div class=\"fxs-contextMenu-text msportalfx-text-ellipsis\">\n" +
+    "                Edit tags\n" +
+    "            </div>\n" +
+    "            <div class=\"fxs-contextMenu-icon\">\n" +
+    "                <svg height=\"100%\" width=\"100%\" aria-hidden=\"true\" role=\"presentation\" focusable=\"false\">\n" +
+    "                    <use href=\"#FxSymbol0-047\"></use>\n" +
+    "                </svg>\n" +
+    "            </div>\n" +
+    "        </li>\n" +*/
+    "    </ul>" +
+    "</div>";
