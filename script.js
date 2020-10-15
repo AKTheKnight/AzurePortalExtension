@@ -113,6 +113,10 @@ function updateResourceList() {
         const linkRegexp = /resource\/subscriptions\/(?<sub>[^/]*)\/resourceGroups\/(?<rg>.*)\/providers\/(?<type>.*\/.*)\/(?<name>.*)/g;
         let matches = linkRegexp.exec(link);
 
+        if (matches == null) {
+            return;
+        }
+
         let subscription = getSubscriptionFromId(matches.groups.sub);
         if (subscription == null) {
             return;
