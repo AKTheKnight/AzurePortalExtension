@@ -132,10 +132,41 @@ function updateResourceList() {
             return;
         }
 
+        //chrome.runtime.sendMessage("getSubscriptions"
+
         if (resource.type === "Microsoft.Web/sites") {
+            $(linkdiv).off();
             $(linkdiv).on("contextmenu", false, function(e) {
                 addPopup();
                 addPopupLink("Visit Website", resource.url);
+
+                addPopupClick("Start WebApp", resource.name + "_start", function() {
+                    chrome.runtime.sendMessage({
+                        reason: "webapp_start",
+                        subscription: subscription,
+                        resourceGroup: resourceGroup,
+                        webapp: resource
+                    });
+                });
+
+                addPopupClick("Stop WebApp", resource.name + "_stop", function() {
+                    chrome.runtime.sendMessage({
+                        reason: "webapp_stop",
+                        subscription: subscription,
+                        resourceGroup: resourceGroup,
+                        webapp: resource
+                    });
+                });
+
+                addPopupClick("Restart WebApp", resource.name + "_restart", function() {
+                chrome.runtime.sendMessage({
+                    reason: "webapp_restart",
+                    subscription: subscription,
+                    resourceGroup: resourceGroup,
+                    webapp: resource
+                    });
+                });
+
                 $("#ape-popup").show().css("top", e.pageY + "px").css("left", e.pageX + "px");
                 e.preventDefault();
             });
@@ -144,12 +175,31 @@ function updateResourceList() {
 }
 
 function addPopup() {
+    $('#ape-popup').off();
     $('#ape-popup').remove();
     $(popup).appendTo("#web-container");
     $('#ape-popup').hide();
 
     $(document).on('click', function(e) {
         $('#ape-popup').remove();
+    });
+}
+
+function addPopupClick(text, id, func) {
+    $("#ape-popup").find('ul.fxs-contextMenu-itemList').append(
+        "<a id=\"" + id + "\">" +
+        "<li role=\"menuitem\" class=\"fxs-contextMenu-item msportalfx-command-like-button fxs-portal-hover\">" +
+        "<div class=\"fxs-contextMenu-text msportalfx-text-ellipsis\">" +
+        text +
+        "</div>" +
+        "<div class=\"fxs-contextMenu-icon\">" +
+        "</div>" +
+        "</li>" +
+        "</a>"
+    );
+
+    $('#' + id).on('click', function() {
+        func();
     });
 }
 

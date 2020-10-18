@@ -12,6 +12,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
                 if (header.name.toLowerCase() === "authorization") {
                     if (authToken == null || authToken !== header.value) {
                         authToken = header.value;
+                        logBackground(authToken);
                         logBackground("authToken updated");
                     }
                 }
@@ -20,7 +21,64 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
         return {requestHeaders: info.requestHeaders};
     },
     {urls: ["<all_urls>"]},
-    ["blocking", "requestHeaders"]);
+    ["blocking", "requestHeaders"]
+);
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.reason === "webapp_restart") {
+        //POST https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites/{name}/restart?api-version=2019-08-01
+        jQuery.ajax({
+            type: 'POST',
+            headers: {
+                'Authorization': authToken,
+                'Content-Type': 'application/json'
+            },
+            url: 'https://management.azure.com/subscriptions/'
+                + request.subscription.id
+                + '/resourcegroups/'
+                + request.resourceGroup.name
+                + '/providers/Microsoft.Web/sites/'
+                + request.webapp.name
+                + '/restart?api-version=2019-08-01'
+        });
+    }
+
+    if (request.reason === "webapp_stop") {
+        console.log(request);
+        jQuery.ajax({
+            type: 'POST',
+            headers: {
+                'Authorization': authToken,
+                'Content-Type': 'application/json'
+            },
+            url: 'https://management.azure.com/subscriptions/'
+                + request.subscription.id
+                + '/resourcegroups/'
+                + request.resourceGroup.name
+                + '/providers/Microsoft.Web/sites/'
+                + request.webapp.name
+                + '/stop?api-version=2019-08-01'
+        });
+    }
+
+    if (request.reason === "webapp_startp") {
+        console.log(request);
+        jQuery.ajax({
+            type: 'POST',
+            headers: {
+                'Authorization': authToken,
+                'Content-Type': 'application/json'
+            },
+            url: 'https://management.azure.com/subscriptions/'
+                + request.subscription.id
+                + '/resourcegroups/'
+                + request.resourceGroup.name
+                + '/providers/Microsoft.Web/sites/'
+                + request.webapp.name
+                + '/start?api-version=2019-08-01'
+        });
+    }
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request !== "getSubscriptions") {
