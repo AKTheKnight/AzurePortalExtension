@@ -12,7 +12,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
                 if (header.name.toLowerCase() === "authorization") {
                     if (authToken == null || authToken !== header.value) {
                         authToken = header.value;
-                        logBackground(authToken);
                         logBackground("authToken updated");
                     }
                 }
