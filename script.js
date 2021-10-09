@@ -24,7 +24,7 @@ function updateData() {
     });
 
     // Updating every 5 seconds as it might take a while with large accounts
-    setTimeout(updateData, 5000);
+    setTimeout(updateData, 10000);
 }
 
 //Wait one second to ensure we have got the azure Auth token in the background

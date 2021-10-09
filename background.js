@@ -60,7 +60,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
     }
 
-    if (request.reason === "webapp_startp") {
+    if (request.reason === "webapp_start") {
         console.log(request);
         jQuery.ajax({
             type: 'POST',
@@ -84,6 +84,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return false;
     }
 
+    logBackground("updating subscriptions")
     getSubscriptions().then(sendResponse);
     return true; // return true to indicate you want to send a response asynchronously
 });
